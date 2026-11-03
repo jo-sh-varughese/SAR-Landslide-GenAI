@@ -1,0 +1,9 @@
+# Optional, heavy dependencies for the real InstructPix2Pix image-editing
+# feature (as opposed to the base math-trace demo, which needs none of this).
+# CPU-only torch build — this machine has no CUDA GPU.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+diffusers>=0.30
+transformers>=4.40
+accelerate>=0.30
+safetensors

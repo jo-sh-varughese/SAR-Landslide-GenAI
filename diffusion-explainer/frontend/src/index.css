@@ -1,0 +1,126 @@
+@import 'tailwindcss';
+@import 'katex/dist/katex.min.css';
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --color-bg: #08090d;
+  --color-bg-raised: #0e1016;
+  --color-panel: #12141c;
+  --color-panel-2: #171a24;
+  --color-border: #262a38;
+  --color-border-soft: #1a1d28;
+  --color-ink: #e8e9ee;
+  --color-ink-dim: #9aa0b4;
+  --color-ink-faint: #5b6178;
+
+  --color-forward: #f0a45e;
+  --color-forward-dim: #7a5a35;
+  --color-reverse: #52d9c4;
+  --color-reverse-dim: #2f6d63;
+  --color-accent: #8f7bff;
+  --color-accent-dim: #4a3f8f;
+  --color-danger: #f2647a;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background-image:
+    radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(143, 123, 255, 0.10), transparent),
+    radial-gradient(ellipse 900px 500px at 100% 10%, rgba(82, 217, 196, 0.07), transparent);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(143, 123, 255, 0.35);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-faint);
+}
+
+/* KaTeX color inheritance + sizing inside dark panels */
+.katex {
+  color: var(--color-ink);
+  font-size: 1.05em;
+}
+.katex-display {
+  margin: 0.6em 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 2px;
+}
+
+.font-serif-heading {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-border);
+  outline: none;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  border: 2px solid #d9d3ff;
+  cursor: pointer;
+  margin-top: -5px;
+}
+input[type='range']::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  border: 2px solid #d9d3ff;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-border);
+}

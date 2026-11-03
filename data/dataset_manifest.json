@@ -1,0 +1,17 @@
+{
+  "zenodo_landslide_reference": {
+    "url": "https://zenodo.org/records/15421843",
+    "files_downloaded": 0
+  },
+  "glad4cd": {
+    "url": "https://zenodo.org/records/14226448",
+    "files_downloaded": 0
+  },
+  "asf_sentinel1_western_ghats": {
+    "sites": [
+      "idukki",
+      "wayanad"
+    ],
+    "granules_found": 0
+  }
+}

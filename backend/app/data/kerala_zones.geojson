@@ -1,0 +1,130 @@
+{
+  "type": "FeatureCollection",
+  "name": "western_ghats_kerala_high_risk_zones",
+  "metadata": {
+    "note": "Illustrative vulnerability zones for demo purposes; boundaries are approximate, not surveyed cadastral data.",
+    "source": "SAR-Landslide-GenAI synthetic reference layer"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "wy-meppadi",
+        "name": "Meppadi / Chooralmala-Mundakkai",
+        "district": "Wayanad",
+        "taluk": "Vythiri",
+        "risk_level": "Severe",
+        "baseline_hazard_index": 0.82,
+        "historical_events": ["2024-07-30 Chooralmala-Mundakkai landslide"],
+        "population_estimate": 8200,
+        "avg_slope_deg": 34
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [76.03, 11.42], [76.12, 11.42], [76.12, 11.49], [76.03, 11.49], [76.03, 11.42]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "wy-vythiri",
+        "name": "Vythiri Ghat Section",
+        "district": "Wayanad",
+        "taluk": "Vythiri",
+        "risk_level": "Critical",
+        "baseline_hazard_index": 0.68,
+        "historical_events": ["2019 Puthumala landslide"],
+        "population_estimate": 5400,
+        "avg_slope_deg": 29
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [76.00, 11.55], [76.10, 11.55], [76.10, 11.63], [76.00, 11.63], [76.00, 11.55]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "id-rajamala",
+        "name": "Rajamala / Munnar Estate Belt",
+        "district": "Idukki",
+        "taluk": "Devikulam",
+        "risk_level": "Severe",
+        "baseline_hazard_index": 0.79,
+        "historical_events": ["2020-08-06 Pettimudi landslide"],
+        "population_estimate": 3100,
+        "avg_slope_deg": 37
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.00, 10.08], [77.09, 10.08], [77.09, 10.15], [77.00, 10.15], [77.00, 10.08]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "id-vazhathope",
+        "name": "Vazhathope / Idukki Reservoir Slopes",
+        "district": "Idukki",
+        "taluk": "Idukki",
+        "risk_level": "Warning",
+        "baseline_hazard_index": 0.55,
+        "historical_events": ["2018 Kerala floods slope failures"],
+        "population_estimate": 6700,
+        "avg_slope_deg": 24
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [76.92, 9.82], [77.02, 9.82], [77.02, 9.90], [76.92, 9.90], [76.92, 9.82]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "wy-banasura",
+        "name": "Banasura Sagar Catchment",
+        "district": "Wayanad",
+        "taluk": "Sulthan Bathery",
+        "risk_level": "Watch",
+        "baseline_hazard_index": 0.38,
+        "historical_events": [],
+        "population_estimate": 4200,
+        "avg_slope_deg": 18
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [75.98, 11.68], [76.08, 11.68], [76.08, 11.76], [75.98, 11.76], [75.98, 11.68]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "id-peermade",
+        "name": "Peermade Highlands",
+        "district": "Idukki",
+        "taluk": "Peermade",
+        "risk_level": "Watch",
+        "baseline_hazard_index": 0.34,
+        "historical_events": [],
+        "population_estimate": 5900,
+        "avg_slope_deg": 16
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [76.98, 9.55], [77.08, 9.55], [77.08, 9.63], [76.98, 9.63], [76.98, 9.55]
+        ]]
+      }
+    }
+  ]
+}

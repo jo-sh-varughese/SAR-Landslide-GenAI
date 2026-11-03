@@ -1,0 +1,45 @@
+# --- Core API ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+python-multipart==0.0.20
+python-dotenv==1.0.1
+
+# --- Background tasks ---
+celery==5.4.0
+redis==5.2.1
+
+# --- Numerics / imaging ---
+numpy==1.26.4
+scipy==1.14.1
+pillow==11.0.0
+scikit-image==0.24.0
+
+# --- PDF report generation ---
+reportlab==4.2.5
+
+# --- GIS stack (optional at runtime; app degrades gracefully if unavailable) ---
+rasterio==1.4.3
+rioxarray==0.18.2
+geopandas==1.0.1
+shapely==2.0.6
+pyproj==3.7.0
+
+# --- Satellite data access ---
+asf_search==8.1.2
+requests==2.32.3
+
+# --- Real-world reference data (elevation, land/sea mask, rainfall) ---
+global-land-mask==1.0.0
+
+# --- Deep learning (ControlNet / Latent Diffusion) ---
+torch==2.5.1
+torchvision==0.20.1
+diffusers==0.31.0
+transformers==4.47.1
+accelerate==1.2.1
+
+# --- Testing ---
+pytest==8.3.4
+httpx==0.28.1
