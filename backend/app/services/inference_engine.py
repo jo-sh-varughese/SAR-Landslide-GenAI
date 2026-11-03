@@ -12,6 +12,8 @@ reconstruction, never as evidence.
 """
 from __future__ import annotations
 
+import base64
+import io
 import time
 import uuid
 from typing import Optional
@@ -28,6 +30,7 @@ from app.schemas.hazard import (
     HazardGridCell,
     LandslidePredictionRequest,
     LandslidePredictionResponse,
+    PreviewImages,
 )
 from app.services.band_processor import RasterStack, load_raster_stack, write_synthesized_geotiff
 from app.services.susceptibility import SusceptibilityResult, compute_susceptibility
@@ -73,6 +76,41 @@ def _risk_level(mean_hazard: float, is_water_dominant: bool) -> str:
     if mean_hazard < 0.8:
         return "Critical"
     return "Severe"
+
+
+def _stretch(band: np.ndarray, lo_pct: float = 2, hi_pct: float = 98) -> np.ndarray:
+    lo, hi = np.percentile(band, lo_pct), np.percentile(band, hi_pct)
+    if hi - lo < 1e-6:
+        return np.zeros_like(band, dtype=np.float32)
+    return np.clip((band - lo) / (hi - lo), 0, 1).astype(np.float32)
+
+
+def _to_data_uri(rgb: np.ndarray, quality: int = 82) -> str:
+    """Encodes an HxWx3 float image in [0, 1] as a JPEG data URI."""
+    from PIL import Image
+
+    img = Image.fromarray((np.clip(rgb, 0, 1) * 255).astype(np.uint8), mode="RGB")
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=quality, optimize=True)
+    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+def _build_preview_images(
+    sar_vv: np.ndarray, sar_vh: np.ndarray, baseline_optical: np.ndarray, synthesized: np.ndarray
+) -> Optional[PreviewImages]:
+    """Standard SAR false-colour composite (R=VV, G=VH, B=VV/VH) plus the cloudy
+    baseline and synthesized optical scenes, for display only."""
+    try:
+        vv, vh = _stretch(sar_vv), _stretch(sar_vh)
+        ratio = _stretch(sar_vv - sar_vh)  # dB difference == log ratio
+        sar_rgb = np.stack([vv, vh, ratio], axis=-1)
+        return PreviewImages(
+            sar=_to_data_uri(sar_rgb),
+            optical_cloudy=_to_data_uri(baseline_optical),
+            optical_synthesized=_to_data_uri(synthesized),
+        )
+    except Exception:  # pragma: no cover - previews are optional, never fatal
+        return None
 
 
 def _build_hazard_geojson(
@@ -250,6 +288,7 @@ def run_landslide_prediction(request: LandslidePredictionRequest) -> LandslidePr
         hazard_geojson=hazard_geojson,
         model_mode=synthesis.mode,
         inference_ms=round(elapsed_ms, 2),
+        preview_images=_build_preview_images(sar_vv, sar_vh, stack.baseline_optical, synthesis.image),
     )
 
 

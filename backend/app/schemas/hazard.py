@@ -95,6 +95,14 @@ class DataSources(BaseModel):
     sar: str
 
 
+class PreviewImages(BaseModel):
+    """Small JPEG data URIs for the dashboard's swipe-compare view (display only)."""
+
+    sar: str
+    optical_cloudy: str
+    optical_synthesized: str
+
+
 class LandslidePredictionResponse(BaseModel):
     request_id: str
     zone: str
@@ -116,6 +124,7 @@ class LandslidePredictionResponse(BaseModel):
     hazard_geojson: dict
     model_mode: str
     inference_ms: float
+    preview_images: Optional[PreviewImages] = None
 
 
 class TimeSeriesPoint(BaseModel):

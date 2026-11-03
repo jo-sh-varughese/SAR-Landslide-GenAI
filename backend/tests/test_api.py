@@ -81,3 +81,11 @@ def test_datasets_listing():
     resp = client.get("/api/v1/datasets")
     assert resp.status_code == 200
     assert "sources" in resp.json()
+
+
+def test_predict_returns_preview_images():
+    payload = {"zone": "idukki", "start_date": "2026-07-01", "end_date": "2026-07-05", "diffusion_steps": 5}
+    body = client.post("/api/v1/predict/landslide", json=payload).json()
+    previews = body["preview_images"]
+    for key in ("sar", "optical_cloudy", "optical_synthesized"):
+        assert previews[key].startswith("data:image/jpeg;base64,")

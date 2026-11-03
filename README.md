@@ -17,6 +17,8 @@
 
 </div>
 
+<p align="center"><img src="docs/dashboard.png" alt="SAR-Landslide-GenAI dashboard: 3D hazard surface over Wayanad with risk gauge and monsoon trends" width="100%"></p>
+
 ---
 
 ## Authors
@@ -194,20 +196,37 @@ flowchart TB
 │   │   └── data/kerala_zones.geojson  Western Ghats vulnerability layer
 │   ├── scripts/preprocess.py        tile + normalise raw GeoTIFFs into training stacks
 │   └── tests/test_api.py            API test suite
-├── frontend/                        Next.js 15 (App Router, React 19, TypeScript) dashboard
+├── frontend/src/                    Next.js 15 (App Router, React 19, TypeScript) dashboard
+│   ├── app/                         landing page (/) and mission-control dashboard (/dashboard)
+│   ├── components/map/              MapLibre GL + deck.gl 3D hazard surface, hillshade, controls
+│   ├── components/panels/           command bar, ⌘K palette, parameters, insights panel
+│   ├── components/insights/         risk gauge, trends, swipe-compare imagery, provenance
+│   ├── store/ · hooks/ · lib/       Zustand store, TanStack Query hooks, typed API client
+├── scripts/download_datasets.py     Zenodo + GLaD4CD + NASA ASF acquisition pipeline
 ├── diffusion-explainer/             companion project: step-by-step DDPM/DDIM visual explainer
 ├── data/{raw,processed}/            dataset storage (contents git-ignored)
 ├── SAR_Landslide_GenAI_*_IEEE.docx  IEEE-format abstracts
 └── run.sh / run.ps1                 launch backend + frontend together
 ```
 
-### Dashboard capabilities
+### Dashboard
 
-- 3D hazard grid on MapLibre GL + deck.gl, with optional MapTiler terrain-DEM tiles
-- **Swipe-compare** between SAR backscatter and synthesised optical view
-- Monsoon-season (May–Sep) trends for risk, soil moisture, and rainfall
-- One-click **citizen advisory PDF** generation
-- Static Western Ghats vulnerability overlay (Idukki, Wayanad, and surrounding zones)
+A full-bleed, dark mission-control interface designed for fast situational awareness.
+
+| Capability | Detail |
+|---|---|
+| **3D hazard surface** | 16×16 extruded hazard columns (deck.gl, interleaved with MapLibre) over free Terrarium-DEM hillshading. Hover for slope / elevation / saturation; click to inspect. |
+| **Analyse anywhere** | Click any point on the map, pick a documented vulnerability zone, or type coordinates into the **⌘K** command palette. |
+| **Risk gauge** | Animated 240° gauge on the hazard ramp, risk class with icon and label (never colour alone), advisory guidance. |
+| **Swipe-compare** | Drag between SAR (VV·VH false colour), cloudy optical, and diffusion-synthesised optical views; any of them can also underlay the map. |
+| **Trends** | Monsoon-season small multiples (risk, rainfall, soil moisture) on a shared, synchronised timeline. No dual axes. |
+| **Provenance** | Live vs. fallback status for every input, run metadata, and the method's stated limits. |
+| **Advisory PDF** | One-click citizen advisory for the assessed area. |
+| **Keyboard first** | `⌘K` / `/` search · `R` run · `↑↓ ↵` palette navigation. |
+
+<p align="center"><img src="docs/landing.png" alt="Landing page" width="100%"></p>
+
+Engineering notes: the WebGL map is code-split and loaded client-only; panels subscribe to narrow Zustand slices so map hover never re-renders the UI; in-flight analyses are aborted when a newer one starts; layer updates use deck.gl `updateTriggers` with animated elevation transitions.
 
 ---
 
@@ -228,7 +247,20 @@ flowchart TB
 | Open-Meteo | Live and historical precipitation | [open-meteo.com](https://open-meteo.com/) |
 | `global-land-mask` (GSHHG) | Offline land / water masking | [PyPI](https://pypi.org/project/global-land-mask/) |
 
-Raw and processed rasters are **not** committed. Place GeoTIFFs in `data/raw/` and run `backend/scripts/preprocess.py`. Set `ASF_USERNAME` / `ASF_PASSWORD` in `backend/.env` from [NASA Earthdata Login](https://urs.earthdata.nasa.gov/) to download Sentinel-1 granules.
+Raw and processed rasters are **not** committed. Fetch them with the acquisition pipeline:
+
+```bash
+python scripts/download_datasets.py --dry-run                 # list what would be fetched
+python scripts/download_datasets.py                           # small samples from every source
+python scripts/download_datasets.py --sources zenodo glad4cd --max-file-mb 6000   # full archives
+python scripts/download_datasets.py --sources asf --download-granules --max-granules 2
+python backend/scripts/preprocess.py --tile-size 256          # tile + normalise into training stacks
+```
+
+- Zenodo files are streamed with resume support and verified against their published MD5 checksums; re-runs skip files that are already complete.
+- ASF Sentinel-1 GRD-HD (IW) granule metadata over Idukki and Wayanad is always recorded; full granules (~1 GB each) download only with `--download-granules` and `ASF_USERNAME` / `ASF_PASSWORD` from [NASA Earthdata Login](https://urs.earthdata.nasa.gov/) in `backend/.env`.
+- If no real raster arrives, the script writes **labelled** synthetic dual-pol GeoTIFFs (`kerala_synthetic_<site>_VV_VH.tif`, 1/f terrain texture + 4-look gamma speckle) so the pipeline still runs.
+- Every run writes an auditable `data/dataset_manifest.json`.
 
 ---
 
@@ -281,7 +313,7 @@ cd backend
 
 | Method | Path | Description |
 |---|---|---|
-| `POST` | `/api/v1/predict/landslide` | SAR→optical synthesis + hazard scoring for a zone / bbox and date range |
+| `POST` | `/api/v1/predict/landslide` | SAR→optical synthesis + hazard scoring for a zone / bbox and date range (includes JPEG `preview_images` for swipe-compare) |
 | `POST` | `/api/v1/predict/landslide/async` | Same, dispatched as a background task |
 | `GET` | `/api/v1/predict/task/{task_id}` | Poll an async prediction |
 | `GET` | `/api/v1/predict/timeseries` | Monsoon-season risk / soil-moisture / rainfall trend |
